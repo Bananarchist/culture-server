@@ -1,0 +1,136 @@
+enum ContainerType {
+	JAR
+	BOX
+	POT
+	BAG
+}
+
+enum VolumetricUnit {
+	QUART
+	PINT
+	LITER
+	GALLON
+	POUND
+}
+
+type Taxonomy {
+	taxonomyId: ID!
+	genus: String!
+	species: String!
+	subspecies: String
+	images: [TaxonomyImage!]
+}
+
+type TaxonomyImage {
+	taxonomyImageId: ID!
+	taxonomyId: String!
+	filename: String!
+}
+
+type Specimen {
+	specimenId: ID!
+	taxonomy: Taxonomy
+	parentSpecimen: Specimen
+	nickname: String
+}
+
+type Jar {
+	jarId: ID!
+	jarType: ContainerType!
+	description: String
+	volume: Float!
+	unit: VolumetricUnit!
+}
+
+type Formula {
+	formulaId: ID!
+	description: String
+	nickname: String!
+}
+
+type Substrate {
+	substrateId: ID!
+	formula: Formula!
+	quantity: Float!
+	unit: VolumetricUnit!
+}
+
+type Culture {
+	cultureId: ID!
+	jar: Jar!
+	specimen: Specimen!
+	substrate: Substrate!
+	cultured: String!
+	origins: [Culture!]!
+}
+
+input NewTaxonomy {
+	genus: String!
+	species: String!
+	subspecies: String
+}
+
+input NewSpecimen {
+	taxonomyId: String!
+	parentSpecimenId: String
+	nickname: String!
+}
+
+input NewFormula {
+	description: String
+	nickname: String!
+}
+
+input NewSubstrate {
+	formulaId: ID!
+	quantity: Float
+	unit: String!
+}
+
+input NewJar {
+	jarType: String!
+	description: String
+	volume: Float!
+	unit: String!
+}
+
+input NewCulture {
+	jarId: String!
+	specimenId: String!
+	substrateId: String!
+	cultured: String!
+	origins: [String!]!
+}
+
+type Query {
+	taxonomy(taxonomyId: ID!): Taxonomy!
+	taxonomies: [Taxonomy!]!
+	specimen(specimenId: ID!): Specimen!
+	specimens: [Specimen!]!
+	images: [TaxonomyImage!]!
+	taxonomyImages(taxonomyId: String!): [TaxonomyImage!]
+	jar(jarId: ID!): Jar!
+	jars: [Jar!]
+	formula(formulaId: ID!): Formula!
+	formulae: [Formula!]
+	substrate(substrateId: ID!): Substrate!
+	substrates: [Substrate!]
+	culture(cultureId: ID!): Culture!
+	cultures: [Culture!]	
+}
+
+type Mutation {
+	createTaxonomy(input: NewTaxonomy!): Taxonomy!
+	updateTaxonomy(id: String!, genus: String, species: String, subspecies: String): Taxonomy!
+	createSpecimen(input: NewSpecimen!): Specimen!
+	updateSpecimen(id: String!, taxonomyId: String, parentSpecimenId: String, nickname: String): Specimen!
+	createFormula(input: NewFormula!): Formula!
+	updateFormula(id: String!, description: String, nickname: String): Formula!
+	createSubstrate(input: NewSubstrate!): Substrate!
+	updateSubstrate(id: String!, formulaId: String, quantity: Float, unit: VolumetricUnit): Substrate!
+	createJar(input: NewJar!): Jar!
+	updateJar(id: String!, jarType: ContainerType, description: String, volume: Float, unit: VolumetricUnit): Jar!
+	createCulture(input: NewCulture!): Culture!
+	updateCulture(id: String!, jarId: String, specimenId: String, substrateId: String, cultured: String): Culture!
+	cloneCulture(id: String!, jarId: String, specimenId: String, substrateId: String, cultured: String): Culture!	
+}
