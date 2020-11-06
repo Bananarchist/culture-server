@@ -13,7 +13,9 @@ define the following env vars when running the Dockerfile:
 * PSQL_USER
 * PSQL_PASSWORD
 
-It might work
+It might work if that would grant it access to a PGSQL server on the docker net
+with the schema described in graph/init.sql - would work with any other SQL
+server with a bit of modification to server.go
 
 ## Takeaways
 * Don't use graphql (for the entire API)
